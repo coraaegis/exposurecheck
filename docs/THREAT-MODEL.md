@@ -11,7 +11,7 @@ Reddit-style text at high accuracy (Staab et al., *Beyond Memorization*, and
 subsequent work). Most people have no idea their own history is this legible —
 self-reported awareness is in the single digits.
 
-`selfaudit` runs that adversarial reading on **your own export** so you can fix
+`exposurecheck` runs that adversarial reading on **your own export** so you can fix
 the worst contributors before someone hostile does the same thing to you.
 
 ## Who this is for
@@ -46,7 +46,7 @@ re-identification vectors this tool does **not** assess:
   rolls and public records you can't see.
 
 A low score means "this export contributes less obvious signal", **not** "you are
-anonymous". `selfaudit` reduces risk; it does not certify safety.
+anonymous". `exposurecheck` reduces risk; it does not certify safety.
 
 ## Trust assumptions
 

@@ -1,6 +1,6 @@
-from selfaudit.backends import HeuristicBackend, build_backend
-from selfaudit.backends.transports import CloudTransport, LocalTransport
-from selfaudit.safety import needs_cloud_ack, require_consent
+from exposurecheck.backends import HeuristicBackend, build_backend
+from exposurecheck.backends.transports import CloudTransport, LocalTransport
+from exposurecheck.safety import needs_cloud_ack, require_consent
 
 
 def test_consent_flag_passes():
@@ -32,6 +32,6 @@ def test_cloud_ack_only_for_anonymous_account():
 
 def test_cloud_backend_requires_key():
     import pytest
-    from selfaudit.backends import TransportError
+    from exposurecheck.backends import TransportError
     with pytest.raises(TransportError):
         build_backend("cloud", api_key="")

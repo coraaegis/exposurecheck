@@ -1,6 +1,6 @@
 """Command-line interface.
 
-    selfaudit audit --reddit ./reddit_export --twitter ./twitter_export \\
+    exposurecheck audit --reddit ./reddit_export --twitter ./twitter_export \\
         --backend local --i-own-this-data
 
 The API key for the cloud backend is read from an environment variable, never
@@ -29,11 +29,11 @@ def _eprint(msg: str = "") -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        prog="selfaudit",
+        prog="exposurecheck",
         description="Audit your own social-media export for re-identification (mosaic) risk. "
                     "Local-first, no-dossier, bring-your-own-LLM.",
     )
-    p.add_argument("--version", action="version", version=f"selfaudit {__version__}")
+    p.add_argument("--version", action="version", version=f"exposurecheck {__version__}")
     sub = p.add_subparsers(dest="command")
 
     a = sub.add_parser("audit", help="run an audit over one or more exports")

@@ -20,7 +20,7 @@ def render_report(result: AuditResult) -> str:
     L: list[str] = []
     bar = "=" * _WIDTH
     L.append(bar)
-    L.append(" selfaudit  --  re-identification risk (no-dossier)")
+    L.append(" exposurecheck  --  re-identification risk (no-dossier)")
     L.append(bar)
     L.append(f" backend     : {result.backend_name}")
     L.append(f" platforms   : {', '.join(p.value for p in result.platforms) or '-'}")
@@ -46,7 +46,7 @@ def render_report(result: AuditResult) -> str:
         L += _bullet(cv, indent=3)
     L.append("")
     L.append(" See your own posts behind a category (in-session, nothing is saved):")
-    L.append("   selfaudit audit <args> --interactive")
+    L.append("   exposurecheck audit <args> --interactive")
     L.append("")
     return "\n".join(L)
 

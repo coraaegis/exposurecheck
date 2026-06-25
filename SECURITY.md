@@ -33,5 +33,5 @@ We will not pursue or support action against researchers who:
 
 ## Scope
 
-The `selfaudit` codebase in this repository. The companion website
+The `exposurecheck` codebase in this repository. The companion website
 (cypherpunkguide.com) and unrelated infrastructure are out of scope here.

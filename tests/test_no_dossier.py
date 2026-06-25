@@ -6,12 +6,12 @@ are surfaced solely through in-session reveal.
 
 from pathlib import Path
 
-from selfaudit.audit import run_audit
-from selfaudit.backends import HeuristicBackend
-from selfaudit.models import RiskCategory
-from selfaudit.output import render_report
-from selfaudit.output.interactive import build_post_index, reveal_category_text
-from selfaudit.parsers import parse_reddit, parse_twitter
+from exposurecheck.audit import run_audit
+from exposurecheck.backends import HeuristicBackend
+from exposurecheck.models import RiskCategory
+from exposurecheck.output import render_report
+from exposurecheck.output.interactive import build_post_index, reveal_category_text
+from exposurecheck.parsers import parse_reddit, parse_twitter
 
 FIX = Path(__file__).parent / "fixtures"
 

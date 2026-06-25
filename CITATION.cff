@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you reference this tool, please cite it as below."
-title: "selfaudit: self-audit your social-media export for re-identification (mosaic) risk"
+title: "ExposureCheck: self-audit your social-media export for re-identification (mosaic) risk"
 abstract: >-
   A local-first, no-dossier command-line tool that runs adversarial LLM
   inference over your own Reddit and X/Twitter exports to surface, by category,

@@ -1,10 +1,10 @@
 from pathlib import Path
 
-from selfaudit.audit import run_audit
-from selfaudit.backends import HeuristicBackend
-from selfaudit.cascade.prefilter import is_empty_or_boilerplate, prefilter
-from selfaudit.models import Platform, Post, RiskCategory
-from selfaudit.parsers import parse_reddit, parse_twitter
+from exposurecheck.audit import run_audit
+from exposurecheck.backends import HeuristicBackend
+from exposurecheck.cascade.prefilter import is_empty_or_boilerplate, prefilter
+from exposurecheck.models import Platform, Post, RiskCategory
+from exposurecheck.parsers import parse_reddit, parse_twitter
 
 FIX = Path(__file__).parent / "fixtures"
 

@@ -3,7 +3,7 @@
 import struct
 import time
 
-from selfaudit.metadata.exif import read_exif_bytes
+from exposurecheck.metadata.exif import read_exif_bytes
 
 
 def _jpeg_with_app1(tiff: bytes) -> bytes:

@@ -1,4 +1,4 @@
-"""selfaudit — audit your own social-media export for re-identification risk.
+"""exposurecheck — audit your own social-media export for re-identification risk.
 
 Local-first. No-dossier. Bring-your-own-LLM (cloud BYOK or local).
 

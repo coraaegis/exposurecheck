@@ -1,6 +1,4 @@
-# selfaudit
-
-> **Working name** — the public project/CLI name is not final yet.
+# ExposureCheck
 
 **Audit your own social-media history for re-identification risk — before someone
 else does it to you.**
@@ -9,7 +7,7 @@ Modern language models can read a few hundred of your ordinary public posts and
 infer where you live, where you work, your routine, your family, and link a
 pseudonymous account back to your real name — not from one careless post, but
 from the *mosaic* of many individually-innocuous ones. Researchers have shown
-this works at scale and with unsettling accuracy. `selfaudit` runs that same
+this works at scale and with unsettling accuracy. `exposurecheck` runs that same
 adversarial reading **on your own export, on your own terms**, and shows you
 which of *your* posts to generalise or edit.
 
@@ -76,8 +74,8 @@ standard library only** — no third-party code touches your export.
 
 ```bash
 git clone <repo>
-cd selfaudit
-pip install -e .          # or just run `python -m selfaudit`
+cd exposurecheck
+pip install -e .          # or just run `python -m exposurecheck`
 ```
 
 ## Usage
@@ -88,7 +86,7 @@ Get your data first:
 
 ```bash
 # Local model — nothing leaves your machine (recommended for anonymous accounts)
-selfaudit audit \
+exposurecheck audit \
   --reddit ./reddit_export.zip \
   --twitter ./twitter_export \
   --backend local --expensive-model llama3.1 \
@@ -96,10 +94,10 @@ selfaudit audit \
 
 # Cloud (bring your own key; set it in the ENV, never on the command line)
 export OPENAI_API_KEY=sk-...
-selfaudit audit --twitter ./twitter_export --backend cloud --i-own-this-data
+exposurecheck audit --twitter ./twitter_export --backend cloud --i-own-this-data
 
 # See your own posts behind a category (in-session, nothing is saved)
-selfaudit audit --reddit ./reddit_export --backend local -i --i-own-this-data
+exposurecheck audit --reddit ./reddit_export --backend local -i --i-own-this-data
 ```
 
 The API key is read from an environment variable on purpose — command-line args

@@ -7,12 +7,12 @@ the structured fields), plus category mapping and route parsing.
 
 import json
 
-from selfaudit.backends.llm import LLMBackend, _to_category
-from selfaudit.backends.transports import Transport
-from selfaudit.cascade.summarize import summarize
-from selfaudit.models import AuditResult, Platform, Post, RiskCategory
-from selfaudit.output import render_report
-from selfaudit.risk import build_cards
+from exposurecheck.backends.llm import LLMBackend, _to_category
+from exposurecheck.backends.transports import Transport
+from exposurecheck.cascade.summarize import summarize
+from exposurecheck.models import AuditResult, Platform, Post, RiskCategory
+from exposurecheck.output import render_report
+from exposurecheck.risk import build_cards
 
 
 class StubTransport(Transport):

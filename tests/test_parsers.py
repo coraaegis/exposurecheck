@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from selfaudit.metadata import read_exif
-from selfaudit.models import Platform
-from selfaudit.parsers import parse_reddit, parse_twitter
+from exposurecheck.metadata import read_exif
+from exposurecheck.models import Platform
+from exposurecheck.parsers import parse_reddit, parse_twitter
 
 FIX = Path(__file__).parent / "fixtures"
 

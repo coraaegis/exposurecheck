@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "selfaudit"
+name = "exposurecheck"
 version = "0.1.0"
 description = "Audit your own social-media export for re-identification (mosaic) risk. Local-first, no-dossier, bring-your-own-LLM."
 readme = "README.md"
@@ -31,13 +31,13 @@ dependencies = []
 dev = ["pytest>=7"]
 
 [project.scripts]
-selfaudit = "selfaudit.cli:main"
+exposurecheck = "exposurecheck.cli:main"
 
 [project.urls]
 Homepage = "https://cypherpunkguide.com"
 
 [tool.setuptools.packages.find]
-include = ["selfaudit*"]
+include = ["exposurecheck*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
