@@ -16,7 +16,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Optional
 
-from ..models import Confidence, Post, RiskCategory, Source
+from ..models import Confidence, Platform, Post, RiskCategory, Source
 
 
 @dataclass
@@ -29,6 +29,7 @@ class RawInference:
     source: Source = Source.TEXT
     post_id: Optional[str] = None
     permalink: Optional[str] = None
+    platform: Optional[Platform] = None   # namespaces post_id across mixed exports
     rationale: str = ""
 
 

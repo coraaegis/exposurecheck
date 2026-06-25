@@ -113,19 +113,28 @@ def _parse_tiff(tiff: bytes) -> ExifData:
     if _TAG_DATETIME in ifd0:
         out.datetime_original = _as_str(_value(tiff, ifd0[_TAG_DATETIME], e))
 
-    if _TAG_EXIF_IFD in ifd0:
-        off = _scalar(_value(tiff, ifd0[_TAG_EXIF_IFD], e))
-        if off:
-            exif_ifd = _read_ifd(tiff, off, e)
-            if _TAG_DATETIME_ORIGINAL in exif_ifd:
-                out.datetime_original = _as_str(_value(tiff, exif_ifd[_TAG_DATETIME_ORIGINAL], e)) or out.datetime_original
+    # Each sub-IFD is independently guarded so a malformed GPS block can't void
+    # the make/model/datetime we already recovered from IFD0.
+    try:
+        if _TAG_EXIF_IFD in ifd0:
+            off = _scalar(_value(tiff, ifd0[_TAG_EXIF_IFD], e))
+            if off:
+                exif_ifd = _read_ifd(tiff, off, e)
+                if _TAG_DATETIME_ORIGINAL in exif_ifd:
+                    out.datetime_original = _as_str(
+                        _value(tiff, exif_ifd[_TAG_DATETIME_ORIGINAL], e)) or out.datetime_original
+    except Exception:
+        pass
 
-    if _TAG_GPS_IFD in ifd0:
-        off = _scalar(_value(tiff, ifd0[_TAG_GPS_IFD], e))
-        if off:
-            gps = _read_ifd(tiff, off, e)
-            out.gps_lat = _gps_coord(tiff, gps, _GPS_LAT, _GPS_LAT_REF, e, ("S",))
-            out.gps_lon = _gps_coord(tiff, gps, _GPS_LON, _GPS_LON_REF, e, ("W",))
+    try:
+        if _TAG_GPS_IFD in ifd0:
+            off = _scalar(_value(tiff, ifd0[_TAG_GPS_IFD], e))
+            if off:
+                gps = _read_ifd(tiff, off, e)
+                out.gps_lat = _gps_coord(tiff, gps, _GPS_LAT, _GPS_LAT_REF, e, ("S",))
+                out.gps_lon = _gps_coord(tiff, gps, _GPS_LON, _GPS_LON_REF, e, ("W",))
+    except Exception:
+        pass
     return out
 
 
@@ -146,13 +155,18 @@ def _read_ifd(tiff: bytes, offset: int, e: str) -> dict:
 
 def _value(tiff: bytes, entry: tuple, e: str):
     typ, cnt, valfield = entry
-    size = _TYPE_SIZES.get(typ, 1)
+    size = _TYPE_SIZES.get(typ, 1) or 1
     total = size * cnt
     if total <= 4:
         raw = valfield[:total]
     else:
         off = struct.unpack(e + "I", valfield)[0]
         raw = tiff[off:off + total]
+    # Clamp the element count to the bytes actually available BEFORE decoding.
+    # A crafted EXIF can claim count=0xFFFFFFFF; without this, _decode would build
+    # a multi-gigabyte struct format string from an attacker-controlled number
+    # (memory-exhaustion DoS) even though `raw` is short.
+    cnt = min(cnt, len(raw) // size)
     return _decode(raw, typ, cnt, e)
 
 
@@ -199,7 +213,7 @@ def _gps_coord(tiff, gps, tag, ref_tag, e, negative_refs) -> Optional[float]:
 
     try:
         deg = r(dms[0]) + r(dms[1]) / 60.0 + r(dms[2]) / 3600.0
-    except (TypeError, ValueError, ZeroDivisionError):
+    except (TypeError, ValueError, ZeroDivisionError, struct.error):
         return None
     ref = _as_str(_value(tiff, gps[ref_tag], e)) if ref_tag in gps else None
     if ref and ref.upper() in negative_refs:

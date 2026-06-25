@@ -12,20 +12,22 @@ from typing import Callable
 from ..models import AuditResult, Export, Post, RiskCard
 
 
-def build_post_index(exports: list[Export]) -> dict[str, Post]:
-    return {p.post_id: p for ex in exports for p in ex.posts}
+def build_post_index(exports: list[Export]) -> dict[tuple, Post]:
+    # key by (platform, post_id) so Reddit and X ids can never collide
+    return {(p.platform, p.post_id): p for ex in exports for p in ex.posts}
 
 
-def reveal_category_text(card: RiskCard, index: dict[str, Post]) -> str:
+def reveal_category_text(card: RiskCard, index: dict[tuple, Post]) -> str:
     lines = [f"Your own posts behind {card.category.label} ({card.level}, score {card.risk_score}):", ""]
-    shown: set[str] = set()
+    shown: set[tuple] = set()
     for e in card.evidence:
-        if not e.post_id or e.post_id in shown:
+        key = (e.platform, e.post_id)
+        if not e.post_id or key in shown:
             continue
-        post = index.get(e.post_id)
+        post = index.get(key)
         if post is None:
             continue
-        shown.add(e.post_id)
+        shown.add(key)
         when = post.created_at.isoformat() if post.created_at else "?"
         where = f"r/{post.community}" if post.community else post.platform.value
         lines.append(f"--- {where} | {when} ---")

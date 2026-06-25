@@ -167,6 +167,7 @@ class Evidence:
     source: Source = Source.TEXT
     post_id: Optional[str] = None
     permalink: Optional[str] = None    # so the user can click through to their own post
+    platform: Optional["Platform"] = None  # namespaces post_id across mixed exports
     created_at: Optional[datetime] = None
 
 

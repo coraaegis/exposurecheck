@@ -96,6 +96,7 @@ class HeuristicBackend(Backend):
                         source=Source.TEXT,
                         post_id=p.post_id,
                         permalink=p.permalink,
+                        platform=p.platform,
                         rationale=f"{label} detected by keyword match (low-recall stub).",
                     ))
         return out

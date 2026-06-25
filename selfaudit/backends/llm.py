@@ -19,6 +19,26 @@ from .transports import Transport
 
 _CATS = [c.value for c in RiskCategory]
 _CAT_BY_VALUE = {c.value: c for c in RiskCategory}
+
+# Generic, developer-controlled evidence labels. The model is NEVER trusted to
+# supply display text: it only chooses category/confidence/post_id, and the label
+# shown on the card and inside the masked snippet is looked up here. This keeps
+# the no-dossier guarantee independent of model behaviour (a model that tries to
+# smuggle a resolved value into `evidence_type` cannot reach the output surface).
+_LLM_EVIDENCE_LABEL: dict[RiskCategory, str] = {
+    RiskCategory.LOCATION: "location signal",
+    RiskCategory.EMPLOYER: "employer signal",
+    RiskCategory.EDUCATION: "education signal",
+    RiskCategory.FAMILY: "family signal",
+    RiskCategory.AGE_DOB: "age / DOB signal",
+    RiskCategory.HEALTH: "health signal",
+    RiskCategory.FINANCE: "financial signal",
+    RiskCategory.REAL_NAME: "real-name signal",
+    RiskCategory.SCHEDULE: "routine / timing signal",
+    RiskCategory.RELATIONSHIPS: "relationship signal",
+    RiskCategory.POLITICS_RELIGION: "affiliation signal",
+    RiskCategory.IDENTITY_LINK: "account-linkage signal",
+}
 _CAT_ALIASES = {
     "dob": RiskCategory.AGE_DOB, "age": RiskCategory.AGE_DOB,
     "job": RiskCategory.EMPLOYER, "work": RiskCategory.EMPLOYER, "company": RiskCategory.EMPLOYER,
@@ -46,11 +66,11 @@ _EXTRACT_SYS = (
     "whole history, including weak individually-innocuous signals.\n"
     "Output STRICT JSON only: an array of objects "
     '{"post_id": str, "category": one of ' + json.dumps(_CATS) + ', '
-    '"confidence": "low"|"medium"|"high", "evidence_type": short generic label}.\n'
+    '"confidence": "low"|"medium"|"high"}.\n'
     "HARD RULES:\n"
-    "- NEVER output any resolved value: no real city, neighbourhood, street, employer "
-    "name, person name, handle, exact age, or coordinates. evidence_type is a generic "
-    'label like "commute clue" or "employer mention" only.\n'
+    "- Do NOT output any resolved value (no real city, neighbourhood, street, employer "
+    "name, person name, handle, exact age, or coordinates). Return only the structured "
+    "fields above; the tool generates all displayed text itself.\n"
     "- Only use post_id values that appear in the input.\n"
     "- One object per (post, category) you find. Omit posts that leak nothing."
 )
@@ -114,7 +134,8 @@ class LLMBackend(Backend):
             post = by_id.get(pid)
             if cat is None or post is None:
                 continue  # ignore hallucinated ids / unknown categories
-            label = _clean_label(obj.get("evidence_type"), default=cat.label.lower())
+            # label is mechanical (never the model's free text) — see _LLM_EVIDENCE_LABEL
+            label = _LLM_EVIDENCE_LABEL.get(cat, "personal signal")
             out.append(RawInference(
                 category=cat,
                 confidence=_to_conf(obj.get("confidence")),
@@ -123,6 +144,7 @@ class LLMBackend(Backend):
                 source=Source.TEXT,
                 post_id=post.post_id,
                 permalink=post.permalink,
+                platform=post.platform,
             ))
         return out
 
@@ -167,8 +189,10 @@ def _to_category(s) -> Optional[RiskCategory]:
     key = str(s).strip().lower().replace(" ", "_").replace("/", "_").replace("-", "_")
     if key in _CAT_BY_VALUE:
         return _CAT_BY_VALUE[key]
+    # whole-token match so "accountant" != "account", "worker" != "work"
+    tokens = set(key.split("_"))
     for alias, cat in _CAT_ALIASES.items():
-        if alias in key:
+        if alias in tokens:
             return cat
     return None
 
@@ -179,8 +203,3 @@ def _to_conf(s) -> Confidence:
         "low": Confidence.LOW, "medium": Confidence.MEDIUM, "med": Confidence.MEDIUM,
         "high": Confidence.HIGH,
     }.get(key, Confidence.LOW)
-
-
-def _clean_label(s, default: str) -> str:
-    s = re.sub(r"\s+", " ", str(s or "")).strip().replace("[", "").replace("]", "")
-    return s[:40] or default

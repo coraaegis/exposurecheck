@@ -10,6 +10,7 @@ mechanically so a degraded or heuristic backend can never miss them.
 from __future__ import annotations
 
 from collections import Counter
+from datetime import timezone
 
 from ..backends.base import RawInference
 from ..backends.heuristic import scan_text
@@ -24,6 +25,8 @@ def deterministic_signals(export: Export) -> list[RawInference]:
     out += _from_profile(export)
     out += _from_exif(export)
     out += _from_timing(export)
+    for r in out:
+        r.platform = export.platform   # namespace post_id across mixed exports
     return out
 
 
@@ -91,7 +94,16 @@ def _from_exif(export: Export) -> list[RawInference]:
 
 
 def _from_timing(export: Export) -> list[RawInference]:
-    hours = [p.created_at.hour for p in export.posts if p.created_at is not None]
+    # normalise to a single reference (UTC) so mixed tz-aware (X) and naive
+    # (Reddit) timestamps are binned consistently
+    hours = []
+    for p in export.posts:
+        dt = p.created_at
+        if dt is None:
+            continue
+        if dt.tzinfo is not None:
+            dt = dt.astimezone(timezone.utc)
+        hours.append(dt.hour)
     if len(hours) < _TIMING_MIN_POSTS:
         return []
     counts = Counter(hours)

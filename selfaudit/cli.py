@@ -105,10 +105,14 @@ def cmd_audit(args: argparse.Namespace) -> int:
                 "the plumbing only; choose --backend local or cloud for a real audit.\n")
 
     exports = []
-    if args.reddit:
-        exports.append(parse_export(args.reddit, Platform.REDDIT))
-    if args.twitter:
-        exports.append(parse_export(args.twitter, Platform.TWITTER))
+    try:
+        if args.reddit:
+            exports.append(parse_export(args.reddit, Platform.REDDIT))
+        if args.twitter:
+            exports.append(parse_export(args.twitter, Platform.TWITTER))
+    except (ValueError, FileNotFoundError, OSError) as e:
+        _eprint(f"could not read export: {e}")
+        return 6
 
     if args.full:
         fraction = 1.0

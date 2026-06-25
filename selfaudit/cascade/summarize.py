@@ -27,7 +27,7 @@ def summarize(raws: list[RawInference]) -> list[Finding]:
         evidence: list[Evidence] = []
         best = Confidence.LOW
         for r in items:
-            key = (r.post_id, r.evidence_type, r.source)
+            key = (r.platform, r.post_id, r.evidence_type, r.source)
             if key in seen:
                 continue
             seen.add(key)
@@ -37,6 +37,7 @@ def summarize(raws: list[RawInference]) -> list[Finding]:
                 source=r.source,
                 post_id=r.post_id,
                 permalink=r.permalink,
+                platform=r.platform,
             ))
             if r.confidence.weight > best.weight:
                 best = r.confidence

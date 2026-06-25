@@ -17,8 +17,11 @@ class ExportSource:
         self._zip: Optional[zipfile.ZipFile] = None
         self._names: list[str] = []
         if os.path.isfile(path) and path.lower().endswith(".zip"):
-            self._zip = zipfile.ZipFile(path)
-            self._names = self._zip.namelist()
+            try:
+                self._zip = zipfile.ZipFile(path)
+                self._names = self._zip.namelist()
+            except (zipfile.BadZipFile, OSError) as e:
+                raise ValueError(f"not a readable .zip: {path} ({e})") from e
         elif os.path.isdir(path):
             for root, _dirs, files in os.walk(path):
                 for fn in files:
