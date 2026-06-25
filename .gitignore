@@ -1,0 +1,29 @@
+# ============================================================
+#  NEVER COMMIT REAL USER DATA
+#  Put your own exports OUTSIDE this repo, or in ./exports/ (ignored).
+#  The tool writes nothing by default; if you save output it goes
+#  to ./out/ (ignored). Only synthetic fixtures live in tests/.
+# ============================================================
+/exports/
+/out/
+/input/
+*.zip
+*.audit.json
+
+# Secrets / bring-your-own API keys — never commit
+.env
+.env.*
+*.key
+api_keys*
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/

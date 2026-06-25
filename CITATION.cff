@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you reference this tool, please cite it as below."
+title: "selfaudit: self-audit your social-media export for re-identification (mosaic) risk"
+abstract: >-
+  A local-first, no-dossier command-line tool that runs adversarial LLM
+  inference over your own Reddit and X/Twitter exports to surface, by category,
+  what a mosaic re-identification attack could reconstruct — so you can generalise
+  or edit the highest-risk posts. Bring-your-own-model (cloud or local).
+type: software
+authors:
+  - name: "Cora Aegis"
+    website: "https://cypherpunkguide.com"
+version: "0.1.0"
+keywords:
+  - privacy
+  - opsec
+  - deanonymization
+  - re-identification
+  - osint-defense
+  - mosaic
+url: "https://cypherpunkguide.com"
+# repository-code: "https://github.com/<account>/<repo>"   # set on first public release
+# license: AGPL-3.0-or-later   # finalise before release (see LICENSE)

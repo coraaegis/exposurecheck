@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "selfaudit"
+version = "0.1.0"
+description = "Audit your own social-media export for re-identification (mosaic) risk. Local-first, no-dossier, bring-your-own-LLM."
+readme = "README.md"
+requires-python = ">=3.10"
+# LICENSE: placeholder — final choice (AGPL-3.0 vs MIT) pending. See LICENSE.
+license = { text = "LicenseRef-UNSET" }
+keywords = [
+    "privacy", "opsec", "deanonymization", "re-identification",
+    "osint-defense", "mosaic", "reddit", "twitter", "self-audit",
+]
+authors = [{ name = "Cora Aegis" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Security",
+    "Programming Language :: Python :: 3 :: Only",
+]
+# Everything — parsing, EXIF, cascade, AND the cloud/local HTTP backends — runs
+# on the Python standard library only (urllib). Minimal trusted computing base:
+# no third-party code ever touches your export.
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+selfaudit = "selfaudit.cli:main"
+
+[project.urls]
+Homepage = "https://cypherpunkguide.com"
+
+[tool.setuptools.packages.find]
+include = ["selfaudit*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,19 @@
+LICENSE NOT YET FINALISED
+=========================
+
+The license for this project is intentionally undecided in v0.1 and MUST be set
+before any public release.
+
+Leading candidates:
+
+  - AGPL-3.0-or-later  — strong copyleft; keeps forks (including network/SaaS
+    forks) open. On-brand for a cypherpunk privacy tool meant to be run locally
+    and audited, and discourages a closed re-hosted "attack-as-a-service" fork.
+
+  - MIT / BSD-3-Clause — maximal adoption and citation; minimal friction for
+    other privacy projects to reuse parts.
+
+Until this file is replaced with a real license, the work is "all rights
+reserved" by default and should not be redistributed.
+
+(c) Cora Aegis — https://cypherpunkguide.com
