@@ -18,4 +18,7 @@ def global_caveats() -> list[str]:
         "Out of scope: cross-service timing/metadata correlation, writing-style (stylometry), "
         "the follower/reply graph, and anything outside the export you provided. A closed-set "
         "audit is not the open world.",
+        "Image CONTENT is not analysed — only EXIF/metadata, which platforms often strip. A "
+        "photo can still reveal where you are from its content alone (a storefront, a skyline, "
+        "a view), so review your own photos by eye; this tool does not.",
     ]

@@ -30,6 +30,9 @@ def render_report(result: AuditResult) -> str:
     if m.get("not_analyzed"):
         L.append(f" budget note : {m['not_analyzed']} kept posts were below the analysis "
                  f"budget — NOT deleted; re-run with --full to include them.")
+    if m.get("media_count"):
+        L.append(f" media       : {m['media_count']} image(s) — EXIF/metadata only; visual "
+                 f"content NOT analyzed (review your photos yourself)")
 
     if not result.cards:
         L.append("")

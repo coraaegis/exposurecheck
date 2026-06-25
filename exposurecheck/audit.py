@@ -39,5 +39,6 @@ def run_audit(
             "kept": outcome.kept_count,
             "not_analyzed": outcome.not_analyzed_count,
             "raw": outcome.raw_count,
+            "media_count": sum(len(ex.media) for ex in exports),
         },
     )
