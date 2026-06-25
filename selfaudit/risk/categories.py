@@ -90,7 +90,7 @@ REMEDIATION: dict[RiskCategory, list[str]] = {
         "Remove any post or link that exposes a real name; check link previews and handles.",
     ],
     RiskCategory.SCHEDULE: [
-        "Vary posting times; avoid 'every weekday at 8:10' routine markers.",
+        "Vary posting times; avoid naming fixed, repeated daily slots (the same commute or run each day).",
         "Remember posting-time concentration alone discloses your timezone.",
     ],
     RiskCategory.RELATIONSHIPS: [
