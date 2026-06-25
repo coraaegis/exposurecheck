@@ -1,0 +1,15 @@
+# Normalise line endings to LF in the repo (keeps the shell script runnable on
+# Linux and avoids noisy CRLF churn across platforms).
+* text=auto eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.toml text eol=lf
+*.cff text eol=lf
+*.csv text eol=lf
+*.js text eol=lf
+
+# Binary fixtures
+*.jpg binary
+*.jpeg binary
+*.png binary
