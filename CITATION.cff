@@ -19,5 +19,5 @@ keywords:
   - osint-defense
   - mosaic
 url: "https://cypherpunkguide.com"
+license: MIT
 # repository-code: "https://github.com/<account>/<repo>"   # set on first public release
-# license: AGPL-3.0-or-later   # finalise before release (see LICENSE)

@@ -8,8 +8,7 @@ version = "0.1.0"
 description = "Audit your own social-media export for re-identification (mosaic) risk. Local-first, no-dossier, bring-your-own-LLM."
 readme = "README.md"
 requires-python = ">=3.10"
-# LICENSE: placeholder — final choice (AGPL-3.0 vs MIT) pending. See LICENSE.
-license = { text = "LicenseRef-UNSET" }
+license = { text = "MIT" }
 keywords = [
     "privacy", "opsec", "deanonymization", "re-identification",
     "osint-defense", "mosaic", "reddit", "twitter", "self-audit",
@@ -19,6 +18,7 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
     "Topic :: Security",
     "Programming Language :: Python :: 3 :: Only",
 ]

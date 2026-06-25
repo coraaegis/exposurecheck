@@ -133,7 +133,13 @@ are working end-to-end. Roadmap: real-corpus recall/false-positive evaluation
 Found a privacy or safety flaw? See [`SECURITY.md`](SECURITY.md). Reach the author
 at `cora@cypherpunkguide.com` (PGP via WKD: `gpg --locate-keys cora@cypherpunkguide.com`).
 
-## License
+## License & official source
 
-License not finalised — see [`LICENSE`](LICENSE). Built by **Cora Aegis**
+**MIT** — see [`LICENSE`](LICENSE). Built by **Cora Aegis**
 ([cypherpunkguide.com](https://cypherpunkguide.com)).
+
+This repository (and the name **ExposureCheck**) is the canonical, official
+source. You are free to fork and reuse under the MIT terms — but please don't
+present a fork as the official project. ExposureCheck is for auditing **your
+own** data; see [`docs/ABUSE-EVAL.md`](docs/ABUSE-EVAL.md) for the dual-use
+safeguards that carry that intent (the licence deliberately does not — it can't).
