@@ -73,10 +73,33 @@ Core (parsing, EXIF, cascade, **and** the cloud/local HTTP backends) is **Python
 standard library only** — no third-party code touches your export.
 
 ```bash
-git clone <repo>
-cd exposurecheck
-pip install -e .          # or just run `python -m exposurecheck`
+# from source (a PyPI release will come with the first public version):
+git clone <repo> && cd exposurecheck && pip install -e .
+# or run without installing:
+python -m exposurecheck --help
 ```
+
+ExposureCheck is a **command-line tool** today, aimed at people comfortable with a
+terminal — which is also where its first reviewers live (GitHub, Hacker News,
+privacy forums). A **one-click app for non-technical users** — a packaged build
+with a local, in-browser UI and no Python to install — is the next milestone (see
+[Status](#status)). The CLI stays for power users.
+
+### Verifying a release
+
+Releases are **not signed with an identity code-signing certificate** — the author
+is pseudonymous, and such a certificate would tie the project to a legal identity,
+the opposite of the point. Authenticity is cryptographic and verifiable instead:
+
+- Each release is **PGP-signed** by Cora Aegis. Fetch the key via WKD
+  (`gpg --locate-keys cora@cypherpunkguide.com`), then
+  `gpg --verify exposurecheck-<version>.tar.gz.asc`.
+- **SHA-256 checksums** are published with every release.
+- Builds are **reproducible** — rebuild from the tagged source and confirm the
+  artifact matches.
+- Prefer a **package manager** (pip / Scoop / Homebrew) over a downloaded `.exe`.
+  An unsigned Windows binary may show a SmartScreen "unknown publisher" prompt;
+  that is expected — verify the PGP signature or run from source.
 
 ## Usage
 
@@ -124,9 +147,19 @@ pre-release abuse evaluation.
 
 ## Status
 
-`v0.1` alpha — Reddit + X, EXIF/GPS, the full cascade and the no-dossier report
-are working end-to-end. Roadmap: real-corpus recall/false-positive evaluation
-(SynthPAI), more platforms (Mastodon), single-post / pre-post checks.
+`v0.1` alpha — the **CLI** runs end-to-end (Reddit + X, EXIF/GPS, the
+recall-preserving cascade, the no-dossier report), aimed at terminal-comfortable
+users for now.
+
+Roadmap:
+- A **one-click app** (packaged binary + a hardened, local-only in-browser UI, no
+  Python required) so non-technical people can use it too — the CLI stays for
+  power users.
+- **Image *content* analysis is deliberately not in v1.** Sending images to a
+  cloud model is a serious privacy regression, so v1 extracts EXIF/metadata only
+  and says so plainly; a local-first multimodal option may come later.
+- Real-corpus recall / false-positive evaluation (SynthPAI); more platforms
+  (Mastodon); single-post / pre-post checks.
 
 ## Security & contact
 
