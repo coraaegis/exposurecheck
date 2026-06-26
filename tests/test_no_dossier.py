@@ -50,3 +50,13 @@ def test_reveal_shows_own_post_text_that_report_hid():
     # user explicitly clicks through to their OWN post
     assert "Northpoint" in revealed
     assert "Northpoint" not in render_report(result)
+
+
+def test_heuristic_report_is_flagged_incomplete():
+    # The low-recall heuristic backend must NEVER read as an all-clear, even when
+    # it DOES surface some cards — the incompleteness banner is unconditional.
+    result, _ = _result_and_exports()
+    report = render_report(result)
+    assert result.cards, "fixture should produce cards, so we exercise the with-cards path"
+    assert "INCOMPLETE" in report
+    assert "not an all-clear" in report.lower()

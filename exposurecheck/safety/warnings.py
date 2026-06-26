@@ -14,7 +14,9 @@ from ..backends.base import Backend
 def cloud_warning_text() -> str:
     return (
         "CLOUD BACKEND SELECTED -- read before continuing:\n"
-        "You are about to send your post history to a cloud AI provider.\n"
+        "You are about to send your post history to a cloud AI provider. Those posts\n"
+        "are sent UNMASKED -- the no-dossier masking protects only this local report,\n"
+        "not what the provider receives, logs, or may train on.\n"
         "\n"
         "IF the account you are auditing is a pseudonymous one you keep separate from\n"
         "your real identity, AND your AI/cloud account is registered under your real\n"

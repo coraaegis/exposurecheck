@@ -34,11 +34,23 @@ def render_report(result: AuditResult) -> str:
         L.append(f" media       : {m['media_count']} image(s) — EXIF/metadata only; visual "
                  f"content NOT analyzed (review your photos yourself)")
 
+    # The heuristic backend has near-zero recall: it flags a few obvious patterns
+    # and misses most signal. A report with *some* cards is therefore still NOT an
+    # all-clear — say so unconditionally, at the top, so the report can never be
+    # read as a clean bill of health on its own.
+    if result.backend_name.startswith("heuristic"):
+        L.append("")
+        L.append(" " + "!" * (_WIDTH - 2))
+        L.append(" INCOMPLETE — heuristic backend (offline stub, near-zero recall).")
+        L.append(" This is NOT a real audit and NOT an all-clear: it flags only obvious")
+        L.append(" patterns and misses most AI re-identification signal. Whether or not")
+        L.append(" cards appear below, re-run with  --backend local  (offline, private)")
+        L.append(" or  --backend cloud  for a real assessment.")
+        L.append(" " + "!" * (_WIDTH - 2))
+
     if not result.cards:
         L.append("")
         L.append(" No category-level risks surfaced.")
-        if result.backend_name.startswith("heuristic"):
-            L.append(" WARNING: heuristic backend has near-zero recall. This is NOT an all-clear.")
     for c in result.cards:
         L += _render_card(c)
 
