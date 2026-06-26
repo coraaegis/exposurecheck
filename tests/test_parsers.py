@@ -54,3 +54,23 @@ def test_exif_gps_decoded():
     assert abs(exif.gps_lat - 47.6) < 1e-4
     assert abs(exif.gps_lon - (-122.32)) < 1e-4
     assert exif.make == "Cam"
+
+
+def test_twitter_reads_multipart_tweets(tmp_path):
+    # X splits a large archive: tweets.js (part0) + tweets-part1.js (part1), …
+    # every part must be read; the separate tweet-headers.js must be ignored.
+    data = tmp_path / "data"
+    data.mkdir()
+    (data / "account.js").write_text(
+        'window.YTD.account.part0 = [{"account":{"username":"u","accountDisplayName":"U"}}]')
+    (data / "tweets.js").write_text(
+        'window.YTD.tweets.part0 = [{"tweet":{"id_str":"1","full_text":"part zero",'
+        '"created_at":"Tue Apr 04 13:45:22 +0000 2023","entities":{}}}]')
+    (data / "tweets-part1.js").write_text(
+        'window.YTD.tweets.part1 = [{"tweet":{"id_str":"2","full_text":"part one",'
+        '"created_at":"Wed Apr 05 13:45:22 +0000 2023","entities":{}}}]')
+    (data / "tweet-headers.js").write_text(
+        'window.YTD.tweet_headers.part0 = [{"tweet":{"id_str":"999"}}]')
+    ex = parse_twitter(str(tmp_path))
+    assert {p.post_id for p in ex.posts} == {"1", "2"}
+    assert len(ex.posts) == 2

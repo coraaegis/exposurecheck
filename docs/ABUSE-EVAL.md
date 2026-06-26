@@ -102,6 +102,7 @@ turn a consenting third party's export into an actionable attack list" — is
 in-session reveal on their own posts. This unblocks the first public release and
 the companion article's "try it yourself" CTA.
 
-**Known scope limit (separate from this gate, tracked for a pre-release fix):**
-the X parser reads a single `tweets.js`; a very large archive split into
-`tweets-part*.js` would be under-read — a recall gap, not a leak.
+**Scope note:** the X parser reads every `tweets.js` / `tweets-part*.js` part
+(fixed 2026-06-26), so a large multi-part archive is not under-read. Out of scope
+by design: likes, DMs, and `note-tweets.js` (long-form) — content audit covers
+public posts, profile, and media.

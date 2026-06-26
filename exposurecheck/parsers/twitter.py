@@ -1,7 +1,8 @@
 """Parse an X / Twitter data export.
 
 The export is a directory (or .zip) with a ``data/`` folder of ``window.YTD.*``
-JavaScript files plus a ``tweets_media/`` image folder. Unlike Reddit, X leakage
+JavaScript files plus a ``tweets_media/`` image folder. A large archive splits its
+tweets across ``tweets.js`` + ``tweets-part1.js`` … and every part is read. Unlike Reddit, X leakage
 is **metadata-driven**: the bio, self-set location field, pinned tweet, posting
 times/timezone, outbound links, the mention graph, and image EXIF/GPS often leak
 more than the tweet text. This parser pulls all of those layers, not just text —
@@ -25,8 +26,15 @@ def parse_twitter(path: str) -> Export:
         account = _parse_wrapped(src.read_text("account.js"), "account")
         profile = _parse_wrapped(src.read_text("profile.js"), "profile")
         handle = (account or {}).get("username")
-        tweets_text = src.read_text("tweets.js", "tweet.js")
-        posts = _parse_tweets(tweets_text, handle) if tweets_text else []
+        # A large archive splits tweets across tweets.js + tweets-part1.js, …
+        # (legacy: tweet.js). Read every part, not just the first. The regex
+        # excludes the separate tweet-headers.js / note-tweets.js files.
+        items: list = []
+        for rel in src.find_matching(r"tweets?(-part\d+)?\.js"):
+            data = src.read_bytes(rel)
+            if data:
+                items.extend(_load_js_array(data.decode("utf-8", "replace")))
+        posts = _parse_tweet_items(items, handle)
 
         media_by_post = _attach_media(src)
         for p in posts:
@@ -69,9 +77,9 @@ def _parse_wrapped(text: Optional[str], key: str) -> dict:
     return {}
 
 
-def _parse_tweets(text: Optional[str], handle: Optional[str]) -> list[Post]:
+def _parse_tweet_items(items: list, handle: Optional[str]) -> list[Post]:
     out: list[Post] = []
-    for item in _load_js_array(text):
+    for item in items:
         tw = item.get("tweet") if isinstance(item, dict) else None
         if not isinstance(tw, dict):
             continue

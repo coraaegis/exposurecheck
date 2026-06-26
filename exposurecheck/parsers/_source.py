@@ -7,6 +7,7 @@ and so image bytes can be pulled out of a .zip for EXIF without extracting it.
 from __future__ import annotations
 
 import os
+import re
 import zipfile
 from typing import Optional
 
@@ -49,6 +50,12 @@ class ExportSource:
             if os.path.basename(name).lower() in wanted:
                 return name
         return None
+
+    def find_matching(self, pattern: str) -> list[str]:
+        """Stored paths whose basename fully matches ``pattern`` (case-insensitive),
+        sorted — e.g. the multi-part ``tweets.js`` / ``tweets-part1.js`` set."""
+        rx = re.compile(pattern, re.I)
+        return sorted(n for n in self._names if rx.fullmatch(os.path.basename(n)))
 
     def list_dir(self, *dir_basenames: str) -> list[str]:
         """List stored files living under any directory with one of these basenames."""
