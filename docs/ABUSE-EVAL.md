@@ -68,7 +68,7 @@ until the masking layer is fixed.
 
 ## Status
 
-> **Gate run 2026-06-26 — PASSED.**
+> **Gate run 2026-06-26 — passed in these tests (necessary, not sufficient — see Limits below).**
 
 **Method.** A synthetic adversarial export (`tests/_make_abuse_eval_export.py` →
 `tests/fixtures/abuse_eval/`) stands in for a consenting third party: it plants a
@@ -96,11 +96,19 @@ model that fully complied with the injection still cannot surface a resolved
 value. `tests/test_no_dossier.py` + `tests/test_safety.py` (22 tests) assert the
 same invariant in CI.
 
-**Conclusion.** The hypothesis — "an adversary can use this tool, unchanged, to
-turn a consenting third party's export into an actionable attack list" — is
-**falsified for v1**: the only path to a resolved value remains the owner's
-in-session reveal on their own posts. This unblocks the first public release and
-the companion article's "try it yourself" CTA.
+**Conclusion.** In these tests the hypothesis — "an adversary can use this tool,
+unchanged, to turn a consenting third party's export into an actionable attack
+list" — was not borne out: the only path to a resolved value remained the owner's
+in-session reveal on their own posts.
+
+**Limits of this evaluation (do not overstate).** This is ONE synthetic adversarial
+export + prompt-injection on two backends. It shows those cases did not leak; it
+does **not** prove the masking is leak-free, and "no leaks" here is not a
+robustness guarantee. Still owed before any strong claim: a broader adversarial /
+quasi-identifier corpus, masking-invariant unit tests, and report-generation
+fuzzing. Treat the result as **necessary, not sufficient** — and note masked
+snippets can still be identifying in combination (subreddit + date + category),
+so a "paranoid" category-only report mode is a sensible future addition.
 
 **Scope note:** the X parser reads every `tweets.js` / `tweets-part*.js` part
 (fixed 2026-06-26), so a large multi-part archive is not under-read. Out of scope
