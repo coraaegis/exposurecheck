@@ -28,6 +28,10 @@ the worst contributors before someone hostile does the same thing to you.
   field, bio, outbound links, image **EXIF/GPS**, device make/model, and
   **posting-time concentration** (which discloses your timezone/active window).
 - Both platforms' **public** content only.
+- **Cross-platform**: if you pass both a Reddit and an X export, they are analysed
+  **together** in a single pass, so account-linkage can reflect signals that span
+  the two accounts. With `--backend cloud`, both exports' posts are sent to the
+  provider in that same run.
 
 ## Out of scope (what it does NOT cover)
 

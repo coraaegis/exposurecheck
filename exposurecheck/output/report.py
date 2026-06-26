@@ -27,6 +27,8 @@ def render_report(result: AuditResult) -> str:
     m = result.meta
     L.append(f" posts       : {result.post_count} parsed | "
              f"{result.candidate_count} analyzed | {m.get('dropped', 0)} empty skipped")
+    L.append(" scope       : public posts + profile + media metadata. "
+             "NOT analyzed: likes, DMs, image content.")
     if m.get("not_analyzed"):
         L.append(f" budget note : {m['not_analyzed']} kept posts were below the analysis "
                  f"budget — NOT deleted; re-run with --full to include them.")
