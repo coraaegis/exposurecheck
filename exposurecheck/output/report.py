@@ -48,6 +48,11 @@ def render_report(result: AuditResult) -> str:
         L.append(" or  --backend cloud  for a real assessment.")
         L.append(" " + "!" * (_WIDTH - 2))
 
+    L.append("")
+    L.append(" Handling: even masked, this report can identify you in combination")
+    L.append(" (subreddit + date + category). Keep it local — don't paste it, screenshot")
+    L.append(" it, or store it in a cloud-synced folder.")
+
     if not result.cards:
         L.append("")
         L.append(" No category-level risks surfaced.")

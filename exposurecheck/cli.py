@@ -63,6 +63,8 @@ def build_parser() -> argparse.ArgumentParser:
     a.add_argument("--batch-size", type=int, default=10, help="expensive-tier batch size")
     a.add_argument("-i", "--interactive", action="store_true",
                    help="after the report, reveal your own posts behind a category (nothing saved)")
+    a.add_argument("--debug", action="store_true",
+                   help="show full tracebacks / raw error text on failure (may include post content)")
     return p
 
 
@@ -99,18 +101,23 @@ def cmd_audit(args: argparse.Namespace) -> int:
             _eprint(f"(set your key in ${args.api_key_env}; never pass it on the command line)")
         return 4
 
-    # cloud safety flow
+    # cloud safety flow — cloud ALWAYS requires an explicit acknowledgement (a typed
+    # phrase or --cloud-ack), so a full archive is never uploaded by accident.
     if backend.sends_data_offsite:
         _eprint(cloud_warning_text())
         _eprint("")
-        if needs_cloud_ack(backend, args.anon_account) and not args.cloud_ack:
+        if not args.cloud_ack:
+            lead = ("Anonymous account via cloud AI — this can deanonymize you. "
+                    if needs_cloud_ack(backend, args.anon_account)
+                    else "Cloud sends your UNMASKED posts to the provider. ")
             try:
-                ans = input("Anonymous account via cloud AI. Type 'I accept the risk' to proceed: ")
+                ans = input(lead + "Type 'I accept the risk' to proceed: ")
             except (EOFError, KeyboardInterrupt):
                 _eprint("")
                 ans = ""
             if ans.strip().lower() not in ("i accept the risk", "yes"):
-                _eprint("Not acknowledged. Use --backend local for a strictly-anonymous audit.")
+                _eprint("Not acknowledged. Use --backend local (or --offline), or pass "
+                        "--cloud-ack to confirm non-interactively.")
                 return 5
 
     if args.backend == "heuristic":
@@ -124,7 +131,12 @@ def cmd_audit(args: argparse.Namespace) -> int:
         if args.twitter:
             exports.append(parse_export(args.twitter, Platform.TWITTER))
     except (ValueError, FileNotFoundError, OSError) as e:
-        _eprint(f"could not read export: {e}")
+        # do not echo the raw error: a parser exception message can contain post
+        # content. Show the type only, unless the user opts into --debug.
+        _eprint(f"could not read export: {type(e).__name__} "
+                f"(error text suppressed in case it contains post content; --debug to show)")
+        if args.debug:
+            _eprint(f"  detail: {e}")
         return 6
 
     if args.full:
@@ -163,10 +175,22 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     parser = build_parser()
     args = parser.parse_args(argv)
-    if args.command == "audit":
+    if args.command != "audit":
+        parser.print_help()
+        return 0
+    try:
         return cmd_audit(args)
-    parser.print_help()
-    return 0
+    except KeyboardInterrupt:
+        _eprint("\nInterrupted.")
+        return 130
+    except Exception as e:
+        # Never dump a raw traceback by default: a stack trace or a content-bearing
+        # exception message could echo the user's posts to stderr / scrollback / swap.
+        if getattr(args, "debug", False):
+            raise
+        _eprint(f"error: {type(e).__name__} (run with --debug for the full traceback; "
+                f"suppressed here in case it contains post content)")
+        return 7
 
 
 if __name__ == "__main__":

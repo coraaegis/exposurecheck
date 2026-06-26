@@ -110,6 +110,16 @@ fuzzing. Treat the result as **necessary, not sufficient** — and note masked
 snippets can still be identifying in combination (subreddit + date + category),
 so a "paranoid" category-only report mode is a sensible future addition.
 
+**Two specifics worth stating plainly.** (1) The **local (Ollama) backend was not
+empirically tested here** — only heuristic and cloud were. The no-dossier invariant
+is mechanical (masks come from metadata, not model text) and so is expected to hold
+on any backend, but for the local path that is a design guarantee, not a measured
+result. (2) Masked labels intentionally carry **source coordinates** — subreddit /
+handle, date, and media filename — so the owner can locate the post to fix; those
+coordinates can themselves be identifying, which is why every report now prints a
+"keep this local" handling note. Auditing exactly which metadata may enter a label
+(plus a masking-invariant test for it) is an owed fast-follow.
+
 **Scope note:** the X parser reads every `tweets.js` / `tweets-part*.js` part
 (fixed 2026-06-26), so a large multi-part archive is not under-read. Out of scope
 by design: likes, DMs, and `note-tweets.js` (long-form) — content audit covers
