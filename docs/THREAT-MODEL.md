@@ -52,13 +52,38 @@ anonymous". `exposurecheck` reduces risk; it does not certify safety.
 
 - **No operator trust required.** The author holds no keys, no servers, no copy
   of your data. The tool does not phone home.
-- **Local backend = no egress.** With `--backend local`, nothing leaves your
-  machine.
+- **Local backend = no egress, enforceable.** With `--backend local` nothing
+  leaves your machine; `--offline` *hard-blocks* any off-machine connection at the
+  socket level (loopback / local Ollama still allowed), so "it doesn't phone home"
+  is something you can enforce and test, not just take on trust.
 - **Cloud backend = you trust your chosen provider** with the posts you send.
   See the conditional warning in the README and `docs/ABUSE-EVAL.md`: for a
   strictly-anonymous account audited through a real-name AI account, the provider
   itself becomes a deanonymization vector.
 - **Minimal trusted base.** Core + backends are Python standard library only.
+
+## Data lifecycle (what touches disk, network, and logs)
+
+The tool reads your most sensitive archive, so how it handles that data is part of
+the threat model:
+
+- **No telemetry, no analytics, no auto-update, no "call home".** The only network
+  use is the backend you choose: `heuristic` and `local` reach nothing off-machine
+  (and `--offline` enforces that at the socket level); `cloud` contacts only the
+  endpoint you pass.
+- **Nothing is persisted.** The tool writes no dossier, no profile, no cache, and no
+  report file of its own — the report goes to stdout, and the in-session reveal
+  *prints* (never saves) your own post text. If you redirect the report to a file,
+  that file is yours to protect.
+- **`.zip` archives are read in place**, not extracted to a temp directory; image
+  bytes for EXIF are read from the archive without unpacking.
+- **No logging of post content.** Progress and warnings go to stderr; neither logs
+  your posts.
+- **Crashes** print a stack trace to stderr. By design it should not contain a
+  resolved value (masking is upstream of all output), but treat stderr like any
+  diagnostic stream.
+- **Your responsibility:** run on a machine you trust; your shell history, terminal
+  scrollback, and OS swap are outside this tool's control.
 
 ## Design choices that follow from the model
 

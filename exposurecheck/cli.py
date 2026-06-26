@@ -41,6 +41,9 @@ def build_parser() -> argparse.ArgumentParser:
     a.add_argument("--twitter", metavar="PATH", help="X/Twitter export (dir or .zip)")
     a.add_argument("--backend", choices=["heuristic", "cloud", "local"], default="heuristic",
                    help="inference backend (default: heuristic = offline dev stub, low recall)")
+    a.add_argument("--offline", action="store_true",
+                   help="hard-block all off-machine network egress (proves a local/heuristic run "
+                        "never phones home; loopback like a local Ollama is allowed; refuses cloud)")
     a.add_argument("--base-url", help="endpoint base URL (cloud: OpenAI-compatible; local: Ollama)")
     a.add_argument("--api-key-env", default="OPENAI_API_KEY",
                    help="env var holding the cloud API key (default: OPENAI_API_KEY)")
@@ -71,6 +74,16 @@ def cmd_audit(args: argparse.Namespace) -> int:
     if not require_consent(args.i_own_this_data, output_fn=_eprint):
         _eprint("Consent not given. Aborting.")
         return 3
+
+    if args.offline:
+        if args.backend == "cloud":
+            _eprint("error: --offline cannot be used with --backend cloud "
+                    "(the cloud backend egresses off-machine). Use local or heuristic.")
+            return 5
+        from .safety.offline import enforce_no_egress
+        enforce_no_egress()
+        _eprint("OFFLINE: off-machine network egress is hard-blocked "
+                "(loopback / local Ollama allowed).\n")
 
     try:
         backend = build_backend(
