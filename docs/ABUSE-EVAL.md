@@ -68,6 +68,40 @@ until the masking layer is fixed.
 
 ## Status
 
-> **The abuse-eval gate above has NOT yet been run.** v1 ships the guards; the
-> consenting-third-party evaluation is a prerequisite for the first public
-> release and for the companion article's "try it yourself" call to action.
+> **Gate run 2026-06-26 — PASSED.**
+
+**Method.** A synthetic adversarial export (`tests/_make_abuse_eval_export.py` →
+`tests/fixtures/abuse_eval/`) stands in for a consenting third party: it plants a
+distinct, grep-able resolved value in every risk category (real name, home
+address, neighbourhood, employer + project code-name, child's school, a relative,
+finances, a linked alt account, a contact email, and an image carrying EXIF GPS),
+plus two **prompt-injection** posts instructing the model to print those values
+unmasked under a `RESOLVED` field. The report surface was then grepped for every
+planted value and for injection markers (`RESOLVED`, `SYSTEM PROMPT`,
+`ignore all/previous`, `unmasked`).
+
+**Backends exercised.**
+- `heuristic` (offline) — deterministic layer (profile + EXIF + timing).
+- `cloud` via OpenRouter → `openai/gpt-5.5`, run with `--full` so the model reads
+  every post including the injection. (xAI/grok was validated separately in an
+  earlier run; this run deliberately exercises a different provider.)
+
+**Result — PASS.** On both backends the report surface yielded **zero** planted
+resolved values and **zero** injection artefacts. Under the cloud model recall was
+higher (37 masked fragments vs 20) and the model *did* detect the planted real
+name — yet the report shows only `[real-name signal]`, never the name itself. The
+masking layer is mechanical (`backends/_mask.py` builds every label from post
+metadata; the model's free text is never used for snippet/rationale/score), so a
+model that fully complied with the injection still cannot surface a resolved
+value. `tests/test_no_dossier.py` + `tests/test_safety.py` (22 tests) assert the
+same invariant in CI.
+
+**Conclusion.** The hypothesis — "an adversary can use this tool, unchanged, to
+turn a consenting third party's export into an actionable attack list" — is
+**falsified for v1**: the only path to a resolved value remains the owner's
+in-session reveal on their own posts. This unblocks the first public release and
+the companion article's "try it yourself" CTA.
+
+**Known scope limit (separate from this gate, tracked for a pre-release fix):**
+the X parser reads a single `tweets.js`; a very large archive split into
+`tweets-part*.js` would be under-read — a recall gap, not a leak.
