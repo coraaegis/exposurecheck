@@ -35,6 +35,8 @@ exposurecheck = "exposurecheck.cli:main"
 
 [project.urls]
 Homepage = "https://cypherpunkguide.com"
+Repository = "https://github.com/coraaegis/exposurecheck"
+Issues = "https://github.com/coraaegis/exposurecheck/issues"
 
 [tool.setuptools.packages.find]
 include = ["exposurecheck*"]

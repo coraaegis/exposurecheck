@@ -73,8 +73,12 @@ Core (parsing, EXIF, cascade, **and** the cloud/local HTTP backends) is **Python
 standard library only** — no third-party code touches your export.
 
 ```bash
-# from source (a PyPI release will come with the first public version):
-git clone <repo> && cd exposurecheck && pip install -e .
+# pipx — isolated, recommended (works today; a PyPI release is coming):
+pipx install git+https://github.com/coraaegis/exposurecheck
+
+# or from source:
+git clone https://github.com/coraaegis/exposurecheck && cd exposurecheck && pip install -e .
+
 # or run without installing:
 python -m exposurecheck --help
 ```
