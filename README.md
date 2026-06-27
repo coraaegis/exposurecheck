@@ -14,10 +14,22 @@ which of *your* posts to generalise or edit.
 It is **local-first**, produces **no dossier**, and never writes a profile of you
 to disk.
 
-📖 Plain-language explainer of the threat: **https://cypherpunkguide.com** (the
-companion article — read it first if "mosaic re-identification" is new to you).
+📖 Plain-language explainer of the threat:
+**https://cypherpunkguide.com/privacy/social-media-self-audit/** (the companion
+article — read it first if "mosaic re-identification" is new to you).
 
 ---
+
+## Demo
+
+![ExposureCheck running an offline audit on the bundled sample data](media/demo.gif)
+
+*A ~12-second run on the bundled sample export using the offline `--backend
+heuristic` stub — reproducible: clone the repo and run the exact command shown,
+and nothing leaves your machine (`--offline` hard-blocks egress). A real
+`--backend local` or `cloud` model surfaces far more; the full run also scores
+EMPLOYER, FINANCES, FAMILY and SCHEDULE. (Recorded as an
+[asciicast](media/demo.cast).)*
 
 ## What it does
 
